@@ -22,7 +22,7 @@ trigger = (res, query) ->
           value: result
         io.emit 'pull', data
         res.end 'success'
-    aws.getMonthValue(id, main)
+    aws.getSumValue(id, main)
 
 tsvParse = (data, callback) ->
   array = data.split('\t')

@@ -1,5 +1,5 @@
 aws = require 'aws-sdk'
-aws.config.loadFromPath '/Users/tomoya/.aws_credentials.json'
+aws.config.loadFromPath '.aws_credentials.json'
 dynamo = new aws.DynamoDB
 
 
@@ -38,5 +38,29 @@ getValue = (id, date, callback) ->
       d = data['Item']['value']['N']
     callback(e, d)
 
+getSumValue = (id, callback) ->
+  id = 'imp-ea703e7aa1efda0064eaa5s7d8ab7e-76d9e697850c9004h'
+  params =
+    TableName: 'sometracking'
+    Select: 'SPECIFIC_ATTRIBUTES'
+    AttributesToGet: ['id', 'date', 'value']
+    ScanFilter:
+      id:
+        ComparisonOperator: 'IN'
+        AttributeValueList:[
+          S: 'imp-ea703e7aa1efda0064eaa5s7d8ab7e-76d9e697850c9004h']
+      date:
+        ComparisonOperator: 'IN'
+        AttributeValueList:[
+          N: '201406'
+          N: '201407']
+      
+  dynamo.scan params, (err, data) ->
+    if err
+      console.log err
+    else
+      console.log data
+
 exports.getMonthValue = getMonthValue
 exports.getDayValue = getDayValue
+exports.getSumValue = getSumValue
