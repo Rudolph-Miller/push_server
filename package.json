@@ -1,0 +1,12 @@
+{
+	"name": "push_server",
+		"version": "0.0.0",
+		"description": "",
+		"devDependencies": {
+			"hamljs": "*",
+			"socket.io": "*",
+			"socket.io-client": "*",
+			"http": "*",
+			"querystring": "*"
+		}
+}
