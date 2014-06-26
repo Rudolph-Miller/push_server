@@ -4,7 +4,8 @@ async = require 'async'
 dynamo = new aws.DynamoDB
 
 
-getMonthValue = (id, callback) ->
+getMonthValue = (result, callback) ->
+  id = result.id
   now = new Date()
   year = now.getFullYear().toString()
   month = now.getMonth() + 1
@@ -13,7 +14,8 @@ getMonthValue = (id, callback) ->
   date = year + month
   getValue(id, date, callback)
 
-getDayValue = (id, callback) ->
+getDayValue = (result, callback) ->
+  id = result.id
   now = new Date()
   year = now.getFullYear().toString()
   month = now.getMonth() + 1
@@ -25,7 +27,8 @@ getDayValue = (id, callback) ->
   date = year + month + day
   getValue(id, date, callback)
 
-getValue = (id, date, callback) ->
+getValue = (result, date, callback) ->
+  id = result.id
   params =
     TableName: 'sometracking'
     Key: {
@@ -39,7 +42,8 @@ getValue = (id, date, callback) ->
       d = data['Item']['value']['N']
     callback(e, d)
 
-getIdSumValue = (id, callback) ->
+getIdSumValue = (result, callback) ->
+  id = result.id
   params =
     TableName: 'sometracking'
     AttributesToGet:[
@@ -63,11 +67,11 @@ getIdSumValue = (id, callback) ->
       sum = 0
       async.forEach data.Items, (item) ->
         sum += parseInt item.value.N
-      result =
-        IdSumVal: sum
+      result.IdSumVal = sum
       callback null, result
 
-getCampaignSumValue = (campaing_token, callback) ->
+getCampaignSumValue = (result, callback) ->
+  campaing_token = result.campaign_token
   params =
     TableName: 'sometracking'
     AttributesToGet:[
@@ -92,8 +96,7 @@ getCampaignSumValue = (campaing_token, callback) ->
       async.forEach data.Items, (item) ->
         if impOrNot item.id.S
           sum += parseInt item.value.N
-      result =
-        AdSumVal: sum
+      result.CampaignSumVal = sum
       callback null, result
 
 impOrNot = (id) ->

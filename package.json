@@ -6,7 +6,6 @@
 			"hamljs": "*",
 			"socket.io": "*",
 			"socket.io-client": "*",
-			"http": "*",
-			"querystring": "*"
+			"async": "*"
 		}
 }

@@ -1,6 +1,6 @@
-route = (handle, path, res, query) ->
+route = (handle, path, res, query, em) ->
   if typeof handle[path] == 'function'
-    handle[path](res, query)
+    handle[path](res, query, em)
   else
     'No request handler'
 
