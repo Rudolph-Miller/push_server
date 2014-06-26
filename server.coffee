@@ -37,10 +37,13 @@ start = (route, handle) ->
       campaign_token = message.campaign_token
       publisher_token = message.publisher_token
       id = message.id
-      val = message.value
-      io.to(campaign_token).emit 'push', val
+      console.log message
+      data =
+        AdSumVal: message.AdSumVal || null
+        IdSumVal: message.IdSumVal || null
+      io.to(campaign_token).emit 'push', data
       console.log 'pushed to ' + campaign_token
+      console.log data
   server.listen 8888
-
 
 exports.start = start

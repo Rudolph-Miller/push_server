@@ -3,6 +3,7 @@ haml = require 'hamljs'
 aws = require './aws'
 socket = require 'socket.io-client'
 haml = require 'hamljs'
+async = require 'async'
 io = socket 'http://localhost:8888'
 
 trigger = (res, query) ->
@@ -19,10 +20,14 @@ trigger = (res, query) ->
           campaign_token: campaign_token
           publisher_token: publisher_token
           id: id
-          value: result
+        async.forEach Object.keys(result), (key) ->
+          data[key] = result[key]
+          console.log result[key]
+          console.log data
         io.emit 'pull', data
         res.end 'success'
-    aws.getSumValue(id, main)
+    aws.getIdSumValue(id, main)
+    aws.getCampaignSumValue(campaign_token, main)
 
 tsvParse = (data, callback) ->
   array = data.split('\t')

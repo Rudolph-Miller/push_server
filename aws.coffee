@@ -1,5 +1,6 @@
 aws = require 'aws-sdk'
 aws.config.loadFromPath '.aws_credentials.json'
+async = require 'async'
 dynamo = new aws.DynamoDB
 
 
@@ -38,29 +39,67 @@ getValue = (id, date, callback) ->
       d = data['Item']['value']['N']
     callback(e, d)
 
-getSumValue = (id, callback) ->
-  id = 'imp-ea703e7aa1efda0064eaa5s7d8ab7e-76d9e697850c9004h'
+getIdSumValue = (id, callback) ->
   params =
     TableName: 'sometracking'
-    Select: 'SPECIFIC_ATTRIBUTES'
-    AttributesToGet: ['id', 'date', 'value']
-    ScanFilter:
+    AttributesToGet:[
+      'id', 'date', 'value'
+    ]
+    KeyConditions:
       id:
-        ComparisonOperator: 'IN'
+        ComparisonOperator: 'EQ'
         AttributeValueList:[
-          S: 'imp-ea703e7aa1efda0064eaa5s7d8ab7e-76d9e697850c9004h']
+          S: id
+        ]
       date:
-        ComparisonOperator: 'IN'
+        ComparisonOperator: 'LT'
         AttributeValueList:[
-          N: '201406'
-          N: '201407']
-      
+          N: '1000000'
+        ]
+  dynamo.query params, (err, data) ->
+    if err
+      callback err
+    else
+      sum = 0
+      async.forEach data.Items, (item) ->
+        sum += parseInt item.value.N
+      result =
+        IdSumVal: sum
+      callback null, result
+
+getCampaignSumValue = (campaing_token, callback) ->
+  params =
+    TableName: 'sometracking'
+    AttributesToGet:[
+      'id', 'date', 'value'
+    ]
+    ScanFilter:
+      ad_id:
+        ComparisonOperator: 'EQ'
+        AttributeValueList:[
+          S: campaing_token
+        ]
+      date:
+        ComparisonOperator: 'LT'
+        AttributeValueList:[
+          N: '1000000'
+        ]
   dynamo.scan params, (err, data) ->
     if err
-      console.log err
+      callback null
     else
-      console.log data
+      sum = 0
+      async.forEach data.Items, (item) ->
+        if impOrNot item.id.S
+          sum += parseInt item.value.N
+      result =
+        AdSumVal: sum
+      callback null, result
 
-exports.getMonthValue = getMonthValue
+impOrNot = (id) ->
+  id.slice(0, 3) == 'imp'
+
 exports.getDayValue = getDayValue
-exports.getSumValue = getSumValue
+exports.getMonthValue = getMonthValue
+exports.getIdSumValue = getIdSumValue
+exports.getCampaignSumValue = getCampaignSumValue
