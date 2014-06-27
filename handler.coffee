@@ -18,7 +18,6 @@ trigger = (res, query, em) ->
         console.log err
       else
         em.emit 'pull', result
-    aws.getIdSumValue(data, main)
     aws.getCampaignSumValue(data, main)
 
 tsvParse = (data, callback) ->

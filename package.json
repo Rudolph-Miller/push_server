@@ -5,7 +5,7 @@
 		"devDependencies": {
 			"hamljs": "*",
 			"socket.io": "*",
-			"socket.io-client": "*",
+			"aws-sdk": "*",
 			"async": "*"
 		}
 }

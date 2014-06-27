@@ -25,6 +25,7 @@ start = (route, handle) ->
 
   server = http.createServer(onRequest)
   io = socketIO.listen server
+  io.set 'origins', '*:*'
   io.sockets.on 'connection', (socket) ->
     console.log 'connected by ' + socket.id
     socket.emit 'connected'
@@ -35,14 +36,9 @@ start = (route, handle) ->
       console.log 'socket joined ' + campaign_token
   em.on 'pull', (message) ->
     campaign_token = message.campaign_token
-    publisher_token = message.publisher_token
-    id = message.id
-    data =
-      CampaignSumVal: message.CampaignSumVal
-      IdSumVal: message.IdSumVal
-    io.to(campaign_token).emit 'push', data
+    io.to(campaign_token).emit 'push', message
     console.log 'pushed to: ' + campaign_token
-    console.log data
-  server.listen 8888
+    console.log message
+  server.listen 80
 
 exports.start = start
