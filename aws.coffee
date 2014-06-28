@@ -71,7 +71,7 @@ getIdSumValue = (result, callback) ->
       callback null, result
 
 getCampaignSumValue = (result, callback) ->
-  campaing_token = result.campaign_token
+  campaign_token = result.campaign_token
   params =
     TableName: 'sometracking'
     AttributesToGet:[
@@ -81,7 +81,7 @@ getCampaignSumValue = (result, callback) ->
       ad_id:
         ComparisonOperator: 'EQ'
         AttributeValueList:[
-          S: campaing_token
+          S: campaign_token
         ]
       date:
         ComparisonOperator: 'LT'
@@ -97,6 +97,7 @@ getCampaignSumValue = (result, callback) ->
         if impOrNot item.id.S
           sum += parseInt item.value.N
       result.CampaignSumVal = sum
+      result.emit_id = campaign_token
       callback null, result
 
 impOrNot = (id) ->

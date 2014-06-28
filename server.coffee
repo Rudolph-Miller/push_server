@@ -5,6 +5,7 @@ haml = require 'hamljs'
 qs =  require 'querystring'
 events = require 'events'
 
+port = 8888
 
 start = (route, handle) ->
   em = new events.EventEmitter
@@ -30,15 +31,15 @@ start = (route, handle) ->
     console.log 'connected by ' + socket.id
     socket.emit 'connected'
     socket.on 'init', (data) ->
-      campaign_token = data.campaign_token
-      publisher_token = data.publisher_token
-      socket.join campaign_token
-      console.log 'socket joined ' + campaign_token
+      campaign_tokens = data.campaignTokens
+      for token in campaign_tokens
+        socket.join token
+        console.log 'join to ' + token
   em.on 'pull', (message) ->
-    campaign_token = message.campaign_token
-    io.to(campaign_token).emit 'push', message
-    console.log 'pushed to: ' + campaign_token
+    emit_id = message.emit_id
+    io.to(emit_id).emit 'push', message
+    console.log 'pushed to: ' + emit_id
     console.log message
-  server.listen 80
+  server.listen port
 
 exports.start = start
