@@ -68,6 +68,7 @@ getIdSumValue = (result, callback) ->
       async.forEach data.Items, (item) ->
         sum += parseInt item.value.N
       result.IdSumVal = sum
+      result.emit_id = id
       callback null, result
 
 getCampaignSumValue = (result, callback) ->

@@ -18,7 +18,7 @@ trigger = (res, query, em) ->
         console.log err
       else
         em.emit 'pull', result
-    aws.getCampaignSumValue(data, main)
+    aws.getCampaignSumValue(clone(data), main)
 
 tsvParse = (data, callback) ->
   array = data.split('\t')
@@ -28,5 +28,10 @@ tsvParse = (data, callback) ->
     val = item.slice(key.length+1, item.length)
     result[key] = val
   callback(result)
+
+clone = (obj) ->
+  f =->
+  f.prototype = obj
+  new f
 
 exports.trigger = trigger
